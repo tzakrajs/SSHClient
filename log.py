@@ -14,8 +14,10 @@
 
 import logging
 
+
 def new_logger(name, level):
-    formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(module)s - %(message)s')
+    formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s'
+                                      ' - %(module)s - %(message)s')
     handler = logging.StreamHandler()
     handler.setFormatter(formatter)
 
