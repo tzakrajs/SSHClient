@@ -25,9 +25,8 @@ TODO(tzakrajsek): Timeouts on all commands sent to the shell
 
 """
 
+
 class SSHShell(object):
-
-
     """Manipulates an interactive shell on a remote server with plenty of
     handy features that build on paramiko.
 
@@ -52,8 +51,8 @@ class SSHShell(object):
         except Exception, e:
             private_key_path = None
         if private_key_path is not None:
-            private_key_file = os.path.expanduser(private_key_path)
-            private_key = paramiko.RSAKey.from_private_key_file(private_key_file)
+            pk_file = os.path.expanduser(private_key_path)
+            private_key = paramiko.RSAKey.from_private_key_file(pk_file)
         else:
             private_key = None
 
@@ -71,7 +70,7 @@ class SSHShell(object):
             ssh_password = None
         else:
             ssh_password = self.password
-        self.logger.info("Connecting to %s@%s using pw: %s and key: %s" % \
+        self.logger.info("Connecting to %s@%s using pw: %s and key: %s" %
                          (self.username, self.hostname,
                           ssh_password, private_key_path))
         self.ssh = paramiko.SSHClient()
@@ -113,9 +112,9 @@ class SSHShell(object):
             sudo_password = password
         else:
             sudo_password = self.password
-        self.logger.info("Exporting EVs and running sudo bash --norc " \
+        self.logger.info("Exporting EVs and running sudo bash --norc "
                          "--noprofile")
-        self.shell.send("export SUDO_PROMPT='%s' SUDO_PS1='%s'\n" % \
+        self.shell.send("export SUDO_PROMPT='%s' SUDO_PS1='%s'\n" %
                         (self.password_prompt, self.prompt))
         buff = ''
         i = self.ends_with(['\r\n%s' % self.prompt])
@@ -127,11 +126,11 @@ class SSHShell(object):
                 return True
         if i == 1:
             self.logger.info("Sudo password not required, skipping")
-            return True 
+            return True
 
     def su_to(self, username, password):
         """Switches to the specified user with the defined password"""
-        self.logger.info("Switching to the %s user with password %s" % \
+        self.logger.info("Switching to the %s user with password %s" %
                          (username, password))
         su_command = "/bin/su -c '/bin/bash --norc --noprofile' %s\n" % \
                      username
@@ -153,7 +152,7 @@ class SSHShell(object):
         while True:
             current_time = time.time()
             if current_time >= (beginning_time + 10.0):
-                raise TimeoutException('Took longer than 10 seconds to get ' \
+                raise TimeoutException('Took longer than 10 seconds to get '
                                        'the prompt')
                 break
             for id, prompt in enumerate(possible_prompts):
@@ -206,6 +205,6 @@ class SSHShell(object):
         try:
             self.ssh.close()
         except NoneType:
-            self.logger.warning('Cannot destroy SSH connection because it ' \
-                                'has not yet been instantiated or has been ' \
+            self.logger.warning('Cannot destroy SSH connection because it '
+                                'has not yet been instantiated or has been '
                                 'destroyed previously.')
